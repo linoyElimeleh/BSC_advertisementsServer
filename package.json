@@ -12,6 +12,13 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.2",
-    "fs": "^0.0.1-security"
+    "fastify": "^3.25.0",
+    "fastify-cors": "^6.0.2",
+    "fastify-mongodb": "^4.1.1",
+    "fastify-plugin": "^3.0.0",
+    "fastify-swagger": "^4.13.0",
+    "fs": "^0.0.1-security",
+    "mongodb": "^4.2.2",
+    "ws": "^8.4.0"
   }
 }

@@ -1,10 +1,8 @@
 'use strict';
 
 const fs = require('fs');
-const getAllMessages = () => {
-    let rawData = fs.readFileSync('data-from-server.json');
-    let messages = JSON.parse(rawData);
 
+const getAllMessages = (messages) => {
     messages.forEach(m => {
         m["photoHash"] = [];
         m.images.forEach(img => {
@@ -33,10 +31,10 @@ const getMessageById = (id) => {
 
 function base64_encode(fileName) {
     const bitmap = fs.readFileSync(fileName);
-    return new Buffer(bitmap).toString('base64');
+    return Buffer.from(bitmap, 'utf-8').toString('base64');
 }
 
 module.exports = {
     getAllMessages,
-    getMessageById
+    getMessageById,
 };
