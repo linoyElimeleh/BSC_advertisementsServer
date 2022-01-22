@@ -1,11 +1,19 @@
 const {MongoClient} = require('mongodb');
 const fs = require('fs');
+//uri for mongoDb on atlas (cloud)
+/*const uri = "mongodb+srv://yanashech22:" +
+    "Aa123456@advertisementsdb.43exx.mongodb.net/myFirstDatabase?" +
+    "retryWrites=true&w=majority";*/
+//uri for mongoDb on locally
 const uri = "mongodb://localhost:27017"
 const databaseName = 'advertisementsDb';
+const adminDatabaseName = 'creds';
 const collectionName = 'Messages';
+const adminsCollectionName = 'admins';
 let client;
 let db;
 const {hashSingleImage} = require("./photoHaseService")
+const {exists} = require("fs");
 
 class MongoService {
 
@@ -16,10 +24,8 @@ class MongoService {
     async getAllMessages() {
         let messages;
         try {
-            // Connect to the MongoDB cluster
             await client.connect();
             db = await client.db(databaseName)
-
             messages = await this.getMessagesRequest()
         } catch (e) {
             console.error(e);
@@ -32,7 +38,6 @@ class MongoService {
     async getMessagesById(id) {
         let messages;
         try {
-            // Connect to the MongoDB cluster
             await client.connect();
             db = await client.db(databaseName)
             messages = await this.getMessageRequest(id)
@@ -43,8 +48,24 @@ class MongoService {
             return messages;
         }
     }
+    async checkForAdmin(username, password) {
+        let isAdmin;
+        try {
+            await client.connect();
+            db = await client.db(adminDatabaseName)
+            isAdmin = await this.getAdminRequest(username, password);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            client.close();
+            if(isAdmin){
+                return true;
+            }
+            return false;
+        }
+    }
 
-    async initializeMessages() {
+    async initializeMessage() {
         try {
             // Connect to the MongoDB cluster
             await client.connect();
@@ -75,7 +96,6 @@ class MongoService {
         }));
         return messagesPromise;
     }
-
     async getMessageRequest(id) {
         let cursor = db.collection(collectionName).find({
             ids: parseInt(id)
@@ -84,6 +104,11 @@ class MongoService {
             resolve(items);
         }));
         return messagesPromise;
+    }
+
+    async getAdminRequest(username, password) {
+        let isAdmin = await db.collection(adminsCollectionName).findOne({username : username, password: password});
+        return isAdmin;
     }
 }
 
