@@ -8,7 +8,7 @@ const adminsCollectionName = 'admins';
 let client;
 let db;
 const {hashSingleImage} = require("./photoHaseService");
-const {exists} = require("fs");
+const constants = require('../consts');
 
 class mongoService {
 
@@ -44,22 +44,45 @@ class mongoService {
         }
     }
 
-    async checkForAdmin(username, password) {
-        let isAdmin;
+    async adminCrudAction(req) {
+        let successPromise;
+        let success;
         try {
             await client.connect();
-            db = await client.db(adminDatabaseName)
-            isAdmin = await this.getAdminRequest(username, password);
+            switch (req.type){
+                case constants.IS_ADMIN:
+                    db = await client.db(adminDatabaseName)
+                    success = await this.getAdminRequest(req.username, req.password);
+                    break;
+                case constants.CREATE_NEW_AD:
+                    db = await client.db(databaseName)
+                    successPromise = await this.getInsertRequest(req.ad);
+                    success = successPromise.insertedId;
+                    break;
+                case constants.DELETE_AD:
+                    db = await client.db(databaseName)
+                    successPromise = await this.getDeleteRequest(req.messageName);
+                    success = successPromise.deletedCount > 0;
+                    break;
+                case constants.REPLACE_AD:
+                    db = await client.db(databaseName)
+                    successPromise = await this.getReplaceRequest(req.messageName,req.ad);
+                    success = successPromise.modifiedCount > 0;
+                    break;
+                default:
+                    throw 'should not get here'
+            }
         } catch (e) {
             console.error(e);
         } finally {
             client.close();
-            if (isAdmin) {
+            if(success){
                 return true;
             }
             return false;
         }
     }
+
 
     async initializeMessage() {
         try {
@@ -104,8 +127,23 @@ class mongoService {
     }
 
     async getAdminRequest(username, password) {
-        let isAdmin = await db.collection(adminsCollectionName).findOne({username: username, password: password});
+        let isAdmin = await db.collection(adminsCollectionName).findOne({username : username, password: password});
         return isAdmin;
+    }
+
+    async getInsertRequest(ad) {
+        let added = await db.collection(collectionName).insertOne(ad);
+        return added;
+    }
+
+    async getDeleteRequest(messageName) {
+        let deleted = await db.collection(collectionName).deleteOne({messageName: messageName});
+        return deleted;
+    }
+
+    async getReplaceRequest(messageName, newAd) {
+        let replaced = await db.collection(collectionName).replaceOne({messageName: messageName},newAd);
+        return replaced;
     }
 }
 

@@ -2,7 +2,7 @@ function requireLogin(req, res, next) {
     if (req.session && req.session.loggedin) {
         next();
     } else {
-        res.redirect("/login");
+        res.redirect("/api/login");
     }
 }
 

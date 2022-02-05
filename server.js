@@ -1,5 +1,5 @@
 const express = require('express');
-const {messages, auth} = require('./routes');
+const {messages, auth, admin} = require('./routes');
 const cors = require('cors');
 const {mongo} = require('./services');
 const session = require('express-session');
@@ -20,6 +20,8 @@ mongo.initializeMessage();
 
 app.use('/api', messages);
 app.use('/api', auth);
+app.use('/api', admin);
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
