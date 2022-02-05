@@ -43,6 +43,7 @@ class MongoService {
             return messages;
         }
     }
+
     async checkForAdmin(username, password) {
         let isAdmin;
         try {
@@ -53,7 +54,7 @@ class MongoService {
             console.error(e);
         } finally {
             client.close();
-            if(isAdmin){
+            if (isAdmin) {
                 return true;
             }
             return false;
@@ -91,6 +92,7 @@ class MongoService {
         }));
         return messagesPromise;
     }
+
     async getMessageRequest(id) {
         let cursor = db.collection(collectionName).find({
             ids: parseInt(id)
@@ -102,7 +104,7 @@ class MongoService {
     }
 
     async getAdminRequest(username, password) {
-        let isAdmin = await db.collection(adminsCollectionName).findOne({username : username, password: password});
+        let isAdmin = await db.collection(adminsCollectionName).findOne({username: username, password: password});
         return isAdmin;
     }
 }
