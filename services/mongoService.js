@@ -1,10 +1,5 @@
 const {MongoClient} = require('mongodb');
 const fs = require('fs');
-//uri for mongoDb on atlas (cloud)
-/*const uri = "mongodb+srv://yanashech22:" +
-    "Aa123456@advertisementsdb.43exx.mongodb.net/myFirstDatabase?" +
-    "retryWrites=true&w=majority";*/
-//uri for mongoDb on locally
 const uri = "mongodb://localhost:27017"
 const databaseName = 'advertisementsDb';
 const adminDatabaseName = 'creds';
@@ -12,7 +7,7 @@ const collectionName = 'Messages';
 const adminsCollectionName = 'admins';
 let client;
 let db;
-const {hashSingleImage} = require("./photoHaseService")
+const {hashSingleImage} = require("./photoHaseService");
 const {exists} = require("fs");
 
 class MongoService {

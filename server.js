@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const MongoService = require('./MongoService');
+const MongoService = require('./services/mongoService');
 const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
