@@ -1,9 +1,9 @@
 const express = require('express');
-const router = express.router();
-const mongoService = require('./services');
+const router = express.Router();
+const {mongo} = require('../services');
 
 router.get('/messages', function (req, res) {
-    let messages = mongoService.getAllMessages();
+    let messages = mongo.getAllMessages();
     messages.then(data => {
         res.send(data);
     })
@@ -16,11 +16,11 @@ router.get('/messages', function (req, res) {
 
 router.get('/messages/:id', function (req, res) {
     let messages;
-    messages = mongoService.getMessagesById(req.params.id);
+    messages = mongo.getMessagesById(req.params.id);
     messages.then(data => {
-        if (data.length == 0) {
+        if (data.length === 0) {
             res.status(404);
-            res.send("oh no");
+            res.send("id not found");
         } else {
             res.send(data);
         }
@@ -31,3 +31,5 @@ router.get('/messages/:id', function (req, res) {
             });
         });
 });
+
+module.exports = router;

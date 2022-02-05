@@ -1,3 +1,5 @@
-const mongoService = require('./mongoServicemongo');
+const mongoService = require('./mongoService');
+const loginService = require('./loginService');
+const mongo = new mongoService();
 
-module.exports(mongoService);
+module.exports = {mongo, loginService};

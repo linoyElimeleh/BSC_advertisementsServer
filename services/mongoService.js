@@ -10,7 +10,7 @@ let db;
 const {hashSingleImage} = require("./photoHaseService");
 const {exists} = require("fs");
 
-class MongoService {
+class mongoService {
 
     constructor() {
         client = new MongoClient(uri, {useNewUrlParser: true, useUnifiedTopology: true});
@@ -109,4 +109,4 @@ class MongoService {
     }
 }
 
-module.exports = MongoService;
+module.exports = mongoService;
