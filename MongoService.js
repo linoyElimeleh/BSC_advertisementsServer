@@ -50,6 +50,8 @@ class MongoService {
             await client.connect();
             db = await client.db(databaseName);
             await db.dropDatabase();
+
+            // Insert the data to the DB
             let rawData = await fs.readFileSync('data-from-server.json');
             let messages = JSON.parse(rawData);
             this.addHashedImages(messages);
