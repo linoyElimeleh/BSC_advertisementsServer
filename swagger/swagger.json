@@ -1,0 +1,17 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "An advertisement management server",
+    "description": "Advanced topics in web applications - made by: Linoy and Yanna",
+    "license": {
+      "name": "MIT",
+      "url": "https://spdx.org/licenses/MIT.html"
+    }
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "paths": {
+
+  }
+}

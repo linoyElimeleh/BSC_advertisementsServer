@@ -1,0 +1,28 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "fastify": "^3.25.0",
+    "fastify-cors": "^6.0.2",
+    "fastify-mongodb": "^4.1.1",
+    "fastify-plugin": "^3.0.0",
+    "fastify-swagger": "^4.13.0",
+    "fs": "^0.0.1-security",
+    "mongodb": "^4.2.2",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.3.0",
+    "ws": "^8.4.0"
+  }
+}
