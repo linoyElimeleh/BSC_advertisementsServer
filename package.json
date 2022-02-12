@@ -25,6 +25,7 @@
     "fastify-swagger": "^4.13.0",
     "fs": "^0.0.1-security",
     "mongodb": "^4.2.2",
+    "nodemon": "^2.0.15",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0",
     "ws": "^8.4.0"
