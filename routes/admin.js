@@ -74,6 +74,19 @@ router.get('/admin/delete/:messageName', (req,res) =>{
     })
 });
 
+router.get('/admin/messages', function (req, res) {
+    let messages = mongo.getAllMessages();
+    messages.then(data => {
+        let cleanMessages = data.map(({photoHash,...other})=>other);
+        res.send(cleanMessages);
+    })
+        .catch(function (e) {
+            res.status(500, {
+                error: e
+            });
+        });
+});
+
 function validateRequest(ad) {
     if(!('ids' in ad) || !('title' in ad) || !('textFields' in ad) || !('templateSrc' in ad)){
         return false;
