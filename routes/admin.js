@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {mongo, loginService} = require('../services');
 const constants = require('../consts');
+const {count} = require('../server')
 
 router.post("/admin/create", function(req, res) {
     const isValidRequest = validateRequest(req.body.ad);
@@ -62,20 +63,27 @@ router.get('/admin/delete/:messageName', (req,res) =>{
         messageName: messageName
     })
     deleted.then(data => {
-        if(data){
+        if (data) {
             res.status(200);
             res.send("ad successfully deleted");
-        }
-        else
-        {
+        } else {
             res.status(404);
             res.send("no such ad")
         }
     })
 });
 
+router.get('/admin/active-users', (req, res) => {
+    const count = {count: require('../server').count}
+    try {
+        res.send(JSON.stringify(count))
+    } catch (e) {
+        res.status(404);
+    }
+});
+
 function validateRequest(ad) {
-    if(!('ids' in ad) || !('title' in ad) || !('textFields' in ad) || !('templateSrc' in ad)){
+    if (!('ids' in ad) || !('title' in ad) || !('textFields' in ad) || !('templateSrc' in ad)) {
         return false;
     }
     return true;
