@@ -5,6 +5,7 @@ const databaseName = 'advertisementsDb';
 const adminDatabaseName = 'creds';
 const collectionName = 'Messages';
 const adminsCollectionName = 'admins';
+const activeUsersCollectionName = 'activeUsers';
 let client;
 let db;
 const {hashSingleImage} = require("./photoHaseService");
@@ -30,6 +31,20 @@ class mongoService {
         }
     }
 
+    async getAllUsers() {
+        let users;
+        try {
+            await client.connect();
+            db = await client.db(databaseName)
+            users = await this.getAllUsers()
+        } catch (e) {
+            console.error(e);
+        } finally {
+            client.close();
+            return users;
+        }
+    }
+
     async getMessagesById(id) {
         let messages;
         try {
@@ -44,12 +59,26 @@ class mongoService {
         }
     }
 
+    async getUserById(id) {
+        let user;
+        try {
+            await client.connect();
+            db = await client.db(databaseName)
+            user = await this.insertActiveUser(id)
+        } catch (e) {
+            console.error(e);
+        } finally {
+            client.close();
+            return user;
+        }
+    }
+
     async adminCrudAction(req) {
         let successPromise;
         let success;
         try {
             await client.connect();
-            switch (req.type){
+            switch (req.type) {
                 case constants.IS_ADMIN:
                     db = await client.db(adminDatabaseName)
                     success = await this.getAdminRequest(req.username, req.password);
@@ -82,7 +111,6 @@ class mongoService {
             return false;
         }
     }
-
 
     async initializeMessage() {
         try {
@@ -142,8 +170,26 @@ class mongoService {
     }
 
     async getReplaceRequest(messageName, newAd) {
-        let replaced = await db.collection(collectionName).replaceOne({messageName: messageName},newAd);
+        let replaced = await db.collection(collectionName).replaceOne({messageName: messageName}, newAd);
         return replaced;
+    }
+
+    async insertActiveUser(user) {
+        let added = await db.collection(activeUsersCollectionName).insertOne(user);
+        return added;
+    }
+
+    async getUsersRequest() {
+        let cursor = db.collection(activeUsersCollectionName).find({});
+        let usersPromise = await new Promise(resolve => cursor.toArray(function (err, items) {
+            resolve(items);
+        }));
+        return usersPromise;
+    }
+
+    async getDeleteRequest(user) {
+        let deleted = await db.collection(activeUsersCollectionName).deleteOne({userId: user});
+        return deleted;
     }
 }
 
