@@ -9,7 +9,7 @@ const activeUsersCollectionName = 'activeUsers';
 let client;
 let db;
 const {hashSingleImage} = require("./photoHaseService");
-const constants = require('../consts');
+const constants = require('../utils/consts');
 
 class mongoService {
 
@@ -36,7 +36,7 @@ class mongoService {
         try {
             await client.connect();
             db = await client.db(databaseName)
-            users = await this.getAllUsers()
+            users = await this.getUsersRequest()
         } catch (e) {
             console.error(e);
         } finally {
@@ -98,6 +98,16 @@ class mongoService {
                     successPromise = await this.getReplaceRequest(req.messageName,req.ad);
                     success = successPromise.modifiedCount > 0;
                     break;
+                case constants.ADD_USER:
+                    db = await client.db(databaseName)
+                    successPromise = await this.insertActiveUser();
+                    success = successPromise.modifiedCount > 0;
+                    break;
+                case constants.DELETE_USER:
+                    db = await client.db(databaseName)
+                    successPromise = await this.getUserDeleteRequest();
+                    success = successPromise.modifiedCount > 0;
+                    break;
                 default:
                     throw 'should not get here'
             }
@@ -122,6 +132,7 @@ class mongoService {
             let messages = JSON.parse(rawData);
             this.addHashedImages(messages);
             await db.collection(collectionName).insertMany(messages)
+            await db.collection(activeUsersCollectionName).insertOne({name: "users", count:0});
         } catch (e) {
             console.error(e);
         }
@@ -174,21 +185,18 @@ class mongoService {
         return replaced;
     }
 
-    async insertActiveUser(user) {
-        let added = await db.collection(activeUsersCollectionName).insertOne(user);
+    async insertActiveUser() {
+        let added = await db.collection(activeUsersCollectionName).updateOne({name:"users"},{$inc: {count:1}});
         return added;
     }
 
     async getUsersRequest() {
-        let cursor = db.collection(activeUsersCollectionName).find({});
-        let usersPromise = await new Promise(resolve => cursor.toArray(function (err, items) {
-            resolve(items);
-        }));
-        return usersPromise;
+        let firstDoc = db.collection(activeUsersCollectionName).findOne();
+        return firstDoc;
     }
 
-    async getDeleteRequest(user) {
-        let deleted = await db.collection(activeUsersCollectionName).deleteOne({userId: user});
+    async getUserDeleteRequest() {
+        let deleted = await db.collection(activeUsersCollectionName).updateOne({name:"users"},{$inc: {count:-1}});
         return deleted;
     }
 }

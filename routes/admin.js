@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const {mongo, loginService} = require('../services');
-const constants = require('../consts');
-const {count} = require('../server')
+const constants = require('../utils/consts');
+const serverCount = require('../server')
 
 router.post("/admin/create", function(req, res) {
-    const isValidRequest = validateRequest(req.body.ad);
+    let ad = req.body;
+    const isValidRequest = validateRequest(ad);
     if(isValidRequest){
         let added = mongo.adminCrudAction({
             type: constants.CREATE_NEW_AD,
-            ad:req.body.ad
+            ad:ad
         });
         added.then(data => {
             if(data){
@@ -30,13 +31,14 @@ router.post("/admin/create", function(req, res) {
 });
 
 router.post("/admin/update", function(req, res) {
-    const isValidRequest = validateRequest(req.body.ad);
-    const messageName = req.body.messageName;
+    let ad = req.body;
+    const isValidRequest = validateRequest(ad);
+    const messageName = ad.messageName;
     if(isValidRequest){
         let updated = mongo.adminCrudAction({
             type: constants.REPLACE_AD,
             messageName : messageName,
-            ad:req.body.ad
+            ad:ad
         });
         updated.then(data => {
             if(data){
@@ -56,8 +58,8 @@ router.post("/admin/update", function(req, res) {
     }
 });
 
-router.get('/admin/delete/:messageName', (req,res) =>{
-    let messageName = req.params.messageName;
+router.get('/admin/delete', (req,res) =>{
+    let messageName = req.query.messageName;
     let deleted = mongo.adminCrudAction({
         type: constants.DELETE_AD,
         messageName: messageName
@@ -74,12 +76,28 @@ router.get('/admin/delete/:messageName', (req,res) =>{
 });
 
 router.get('/admin/active-users', (req, res) => {
-    const count = {count: require('../server').count}
-    try {
-        res.send(JSON.stringify(count))
-    } catch (e) {
-        res.status(404);
-    }
+    let usersCount = mongo.getAllUsers();
+    usersCount.then(data => {
+        res.send(data.count.toString());
+    })
+        .catch(function (e) {
+            res.status(500, {
+                error: e
+            });
+        });
+});
+
+router.get('/admin/messages', function (req, res) {
+    let messages = mongo.getAllMessages();
+    messages.then(data => {
+        let cleanMessages = data.map(({_id,photoHash,...other})=>other);
+        res.send(cleanMessages);
+    })
+        .catch(function (e) {
+            res.status(500, {
+                error: e
+            });
+        });
 });
 
 function validateRequest(ad) {

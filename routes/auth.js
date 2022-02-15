@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const {mongo, loginService} = require('../services');
-const constants = require('../consts');
+const constants = require('../utils/consts');
 
 router.all("/admin/*", loginService, function (req, res, next) {
     next();
@@ -31,6 +31,7 @@ router.post("/auth", function (req, res) {
                 req.session.username = username;
                 res.redirect('/api/admin/home');
             } else {
+                res.status(401);
                 res.send('Incorrect Username and/or Password!');
             }
             res.end();

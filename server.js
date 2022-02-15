@@ -4,9 +4,9 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const socketio = require('socket.io');
 const http = require('http');
-
+const socketio = require('socket.io');
+const constants = require('./utils/consts');
 const app = express();
 
 const { mongo } = require('./services');
@@ -29,6 +29,19 @@ app.use(
     })
 );
 
+const whitelist = ["http://localhost:3001","http://localhost:3000","http://localhost:63342"]
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin || whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error("Not allowed by CORS"))
+        }
+    },
+    credentials: true,
+}
+app.use(cors(corsOptions))
+
 app.use(
     session({
         secret: 'secret',
@@ -39,7 +52,6 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(cors());
 mongo.initializeMessage();
 
 app.use('/api', messages);
@@ -50,19 +62,31 @@ const httpServer = http.createServer(app);
 const io = socketio(httpServer, { cors: { origins: '*:*' } });
 httpServer.listen(PORT, () => console.log(`Listening to port ${PORT}`));
 
-// app.listen(port, () => {
-//     console.log(`Example app listening at http://localhost:${port}`);
-// });
-
-// const activeUsers = new Set();
-
-export let count = 0;
 io.on('connection', function (socket) {
-    count++;
-    io.sockets.emit('message', { count: count });
+    let inserted = mongo.adminCrudAction({
+        type: constants.ADD_USER,
+    })
+    inserted.then(data => {
+        if (data) {
+            io.sockets.emit('message', { count: 0 });
+            console.log("ok")
+        } else {
+            console.log("bad")
+        }
+    })
 
     socket.on('disconnect', () => {
-        count--;
-        io.sockets.emit('message', { count: count });
+        let deleted = mongo.adminCrudAction({
+            type: constants.DELETE_USER,
+        })
+        deleted.then(data => {
+            if (data) {
+                io.sockets.emit('message', { count: 0 });
+                console.log("ok")
+            } else {
+                console.log("bad")
+            }
+        })
     });
 });
+
