@@ -40,7 +40,6 @@ class mongoService {
         } catch (e) {
             console.error(e);
         } finally {
-            client.close();
             return users;
         }
     }
@@ -150,7 +149,11 @@ class mongoService {
     async getMessagesRequest() {
         let cursor = db.collection(collectionName).find({});
         let messagesPromise = await new Promise(resolve => cursor.toArray(function (err, items) {
-            resolve(items);
+            if (err) {
+                throw (err);
+            } else {
+                resolve(items);
+            }
         }));
         return messagesPromise;
     }
