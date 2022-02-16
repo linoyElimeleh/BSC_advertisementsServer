@@ -13,7 +13,7 @@ router.get("/admin/home", function (req, res) {
 });
 
 router.get(['/', '/login'], function (req, res) {
-    res.sendFile(path.resolve('./views/login.html'), );
+    res.sendFile(path.resolve('./views/login.html'),);
 });
 
 /**

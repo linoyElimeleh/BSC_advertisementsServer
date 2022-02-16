@@ -9,8 +9,8 @@ const socketio = require('socket.io');
 const constants = require('./utils/consts');
 const app = express();
 
-const { mongo } = require('./services');
-const { messages, auth, admin } = require('./routes');
+const {mongo} = require('./services');
+const {messages, auth, admin} = require('./routes');
 const swaggerDocument = require('./swagger/swagger.json');
 
 const PORT = 3000;
@@ -29,7 +29,7 @@ app.use(
     })
 );
 
-const whitelist = ["http://localhost:3001","http://localhost:3000","http://localhost:63343"]
+const whitelist = ["http://localhost:3001", "http://localhost:3000", "http://localhost:63343"]
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1) {
@@ -49,7 +49,7 @@ app.use(
         saveUninitialized: true,
     })
 );
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 mongo.initializeMessage();
@@ -59,7 +59,7 @@ app.use('/api', auth);
 app.use('/api', admin);
 
 const httpServer = http.createServer(app);
-const io = socketio(httpServer, { cors: { origins: '*:*' } });
+const io = socketio(httpServer, {cors: {origins: '*:*'}});
 httpServer.listen(PORT, () => console.log(`Listening to port ${PORT}`));
 
 let count = 0;
@@ -69,7 +69,7 @@ io.on('connection', function (socket) {
     })
     inserted.then(data => {
         if (data) {
-            io.sockets.emit('message', { count: 0 });
+            io.sockets.emit('message', {count: 0});
             console.log("ok")
         } else {
             console.log("bad")
@@ -82,7 +82,7 @@ io.on('connection', function (socket) {
         })
         deleted.then(data => {
             if (data) {
-                io.sockets.emit('message', { count: 0 });
+                io.sockets.emit('message', {count: 0});
                 console.log("ok")
             } else {
                 console.log("bad")

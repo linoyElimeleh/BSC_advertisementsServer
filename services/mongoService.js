@@ -95,7 +95,7 @@ class mongoService {
                     break;
                 case constants.REPLACE_AD:
                     db = await client.db(databaseName)
-                    successPromise = await this.getReplaceRequest(req.messageName,req.ad);
+                    successPromise = await this.getReplaceRequest(req.messageName, req.ad);
                     success = successPromise.modifiedCount > 0;
                     break;
                 case constants.ADD_USER:
@@ -115,7 +115,7 @@ class mongoService {
             console.error(e);
         } finally {
             client.close();
-            if(success){
+            if (success) {
                 return true;
             }
             return false;
@@ -132,7 +132,7 @@ class mongoService {
             let messages = JSON.parse(rawData);
             this.addHashedImages(messages);
             await db.collection(collectionName).insertMany(messages)
-            await db.collection(activeUsersCollectionName).insertOne({name: "users", count:0});
+            await db.collection(activeUsersCollectionName).insertOne({name: "users", count: 0});
         } catch (e) {
             console.error(e);
         }
@@ -166,7 +166,7 @@ class mongoService {
     }
 
     async getAdminRequest(username, password) {
-        let isAdmin = await db.collection(adminsCollectionName).findOne({username : username, password: password});
+        let isAdmin = await db.collection(adminsCollectionName).findOne({username: username, password: password});
         return isAdmin;
     }
 
@@ -186,7 +186,7 @@ class mongoService {
     }
 
     async insertActiveUser() {
-        let added = await db.collection(activeUsersCollectionName).updateOne({name:"users"},{$inc: {count:1}});
+        let added = await db.collection(activeUsersCollectionName).updateOne({name: "users"}, {$inc: {count: 1}});
         return added;
     }
 
@@ -196,7 +196,7 @@ class mongoService {
     }
 
     async getUserDeleteRequest() {
-        let deleted = await db.collection(activeUsersCollectionName).updateOne({name:"users"},{$inc: {count:-1}});
+        let deleted = await db.collection(activeUsersCollectionName).updateOne({name: "users"}, {$inc: {count: -1}});
         return deleted;
     }
 }

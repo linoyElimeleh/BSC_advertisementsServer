@@ -21,27 +21,24 @@ const serverCount = require('../server')
  *         description: Success
  *
  */
-router.post("/admin/create", function(req, res) {
+router.post("/admin/create", function (req, res) {
     let ad = req.body;
     const isValidRequest = validateRequest(ad);
-    if(isValidRequest){
+    if (isValidRequest) {
         let added = mongo.adminCrudAction({
             type: constants.CREATE_NEW_AD,
-            ad:ad
+            ad: ad
         });
         added.then(data => {
-            if(data){
+            if (data) {
                 res.status(200);
                 res.send("ad successfully created");
-            }
-            else
-            {
+            } else {
                 res.status(500);
                 res.send("Error while inserting ad to database")
             }
         })
-    }
-    else{
+    } else {
         res.status(400);
         res.send("Could not add new ad! \nyou're missing either ids, title, textFields or templateSrc fields")
     }
@@ -64,29 +61,26 @@ router.post("/admin/create", function(req, res) {
  *         description: Success
  *
  */
-router.post("/admin/update", function(req, res) {
+router.post("/admin/update", function (req, res) {
     let ad = req.body;
     const isValidRequest = validateRequest(ad);
     const messageName = ad.messageName;
-    if(isValidRequest){
+    if (isValidRequest) {
         let updated = mongo.adminCrudAction({
             type: constants.REPLACE_AD,
-            messageName : messageName,
-            ad:ad
+            messageName: messageName,
+            ad: ad
         });
         updated.then(data => {
-            if(data){
+            if (data) {
                 res.status(200);
                 res.send("ad successfully updated");
-            }
-            else
-            {
+            } else {
                 res.status(500);
                 res.send("Error while updating ad")
             }
         })
-    }
-    else{
+    } else {
         res.status(400);
         res.send("Could not add new ad! \nyou're missing either ids, title, textFields or templateSrc fields")
     }
@@ -109,7 +103,7 @@ router.post("/admin/update", function(req, res) {
  *         description: Success
  *
  */
-router.get('/admin/delete', (req,res) =>{
+router.get('/admin/delete', (req, res) => {
     let messageName = req.query.messageName;
     let deleted = mongo.adminCrudAction({
         type: constants.DELETE_AD,
@@ -175,7 +169,7 @@ router.get('/admin/active-users', (req, res) => {
 router.get('/admin/messages', function (req, res) {
     let messages = mongo.getAllMessages();
     messages.then(data => {
-        let cleanMessages = data.map(({_id,photoHash,...other})=>other);
+        let cleanMessages = data.map(({_id, photoHash, ...other}) => other);
         res.send(cleanMessages);
     })
         .catch(function (e) {
