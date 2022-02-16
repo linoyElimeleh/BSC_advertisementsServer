@@ -16,6 +16,29 @@ router.get(['/', '/login'], function (req, res) {
     res.sendFile(path.resolve('./views/login.html'), );
 });
 
+/**
+ * @swagger
+ * /api/auth:
+ *   post:
+ *     description: Login
+ *     tags:
+ *      - auth
+ *     parameters:
+ *     - name: username
+ *       description: Get specific username
+ *       in: formData
+ *       required: true
+ *       type: String
+ *     - name: password
+ *       description: Get specific password
+ *       in: formData
+ *       required: true
+ *       type: String
+ *     responses:
+ *       200:
+ *         description: Success
+ *
+ */
 router.post("/auth", function (req, res) {
     const username = req.body.username;
     const password = req.body.password;

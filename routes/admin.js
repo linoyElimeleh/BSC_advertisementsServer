@@ -4,6 +4,23 @@ const {mongo, loginService} = require('../services');
 const constants = require('../utils/consts');
 const serverCount = require('../server')
 
+/**
+ * @swagger
+ * /api/admin/create:
+ *   post:
+ *     description: create a new message
+ *     tags:
+ *      - admin
+ *     parameters:
+ *     - name: body
+ *       description: Get specific username
+ *       in: formData
+ *       type: Json
+ *     responses:
+ *       200:
+ *         description: Success
+ *
+ */
 router.post("/admin/create", function(req, res) {
     let ad = req.body;
     const isValidRequest = validateRequest(ad);
@@ -30,6 +47,23 @@ router.post("/admin/create", function(req, res) {
     }
 });
 
+/**
+ * @swagger
+ * /api/admin/update:
+ *   post:
+ *     description: update the message
+ *     tags:
+ *      - admin
+ *     parameters:
+ *     - name: body
+ *       description: Get specific username
+ *       in: formData
+ *       type: Json
+ *     responses:
+ *       200:
+ *         description: Success
+ *
+ */
 router.post("/admin/update", function(req, res) {
     let ad = req.body;
     const isValidRequest = validateRequest(ad);
@@ -58,6 +92,23 @@ router.post("/admin/update", function(req, res) {
     }
 });
 
+/**
+ * @swagger
+ * /api/admin/delete:
+ *   get:
+ *     description: delete the message
+ *     tags:
+ *      - admin
+ *     parameters:
+ *     - name: body
+ *       description: Get specific username
+ *       in: formData
+ *       type: Json
+ *     responses:
+ *       200:
+ *         description: Success
+ *
+ */
 router.get('/admin/delete', (req,res) =>{
     let messageName = req.query.messageName;
     let deleted = mongo.adminCrudAction({
@@ -75,6 +126,23 @@ router.get('/admin/delete', (req,res) =>{
     })
 });
 
+/**
+ * @swagger
+ * /api/admin/active-users:
+ *   get:
+ *     description: get active users
+ *     tags:
+ *      - admin
+ *     parameters:
+ *     - name: body
+ *       description: Get specific username
+ *       in: formData
+ *       type: Json
+ *     responses:
+ *       200:
+ *         description: Success
+ *
+ */
 router.get('/admin/active-users', (req, res) => {
     let usersCount = mongo.getAllUsers();
     usersCount.then(data => {
@@ -87,6 +155,23 @@ router.get('/admin/active-users', (req, res) => {
         });
 });
 
+/**
+ * @swagger
+ * /api/admin/messages:
+ *   get:
+ *     description: get the message
+ *     tags:
+ *      - admin
+ *     parameters:
+ *     - name: body
+ *       description: Get specific username
+ *       in: formData
+ *       type: Json
+ *     responses:
+ *       200:
+ *         description: Success
+ *
+ */
 router.get('/admin/messages', function (req, res) {
     let messages = mongo.getAllMessages();
     messages.then(data => {

@@ -7,6 +7,8 @@ const {mongo} = require('../services');
  * /api/messages:
  *   get:
  *     description: Get all messages
+ *     tags:
+ *      - messages
  *     responses:
  *       200:
  *         description: Success
@@ -29,6 +31,8 @@ router.get('/messages', function (req, res) {
  * /api/messages/:id:
  *   get:
  *     description: Get all messages
+ *     tags:
+ *      - messages
  *     parameters:
  *     - name: id
  *       description: Get specific message

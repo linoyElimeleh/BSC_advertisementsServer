@@ -18,7 +18,7 @@ const PORT = 3000;
 // Use swagger
 const swaggerOptions = {
     swaggerDefinition: swaggerDocument,
-    apis: ['./routes/messages.js'],
+    apis: ['./routes/messages.js', './routes/admin.js', './routes/auth.js'],
 };
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 app.use(
@@ -29,7 +29,7 @@ app.use(
     })
 );
 
-const whitelist = ["http://localhost:3001","http://localhost:3000","http://localhost:63342"]
+const whitelist = ["http://localhost:3001","http://localhost:3000","http://localhost:63343"]
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1) {
@@ -62,6 +62,7 @@ const httpServer = http.createServer(app);
 const io = socketio(httpServer, { cors: { origins: '*:*' } });
 httpServer.listen(PORT, () => console.log(`Listening to port ${PORT}`));
 
+let count = 0;
 io.on('connection', function (socket) {
     let inserted = mongo.adminCrudAction({
         type: constants.ADD_USER,
